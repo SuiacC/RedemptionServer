@@ -33,13 +33,29 @@ class Requests:
         MAC = data["MAC"]
         dbFunction = database.getMAC(MAC)
         if not dbFunction:
-            database.insertElementMongoDB({"MAC": MAC,"key": self.createKey(),"payed": False})
+            key = self.createKey()
+            database.insertElementMongoDB({"MAC": MAC,"key": key,"payed": False})
             response.setResponse("response", False)
+            response.setResponse("key",key)
         else:
             response.setResponse("response", True)
             response.setResponse("key", dbFunction["key"])
             
         return response
+
+    def deleteUser(self,data):
+
+        response = responses.Responses()
+
+        MAC = data["MAC"]
+        dbFunction = database.getMAC(MAC)
+        if not dbFunction:
+            response.setResponse("response",False)
+        else:
+            database.deleteUser(MAC)
+            response.setResponse("response",True)
+            response.setResponse("key", dbFunction["key"])
+
 
 
     def postRequest(self):
@@ -58,14 +74,14 @@ class Requests:
         if r == "CheckMAC":
             response = self.checkMAC(data)
         elif r == "IfUserPayed":
-            response = self.returnAllDevices()
+            response = self.deleteUser(data)
 
         print "response: "
         print response.getResponse()
 
         # If we haven't a response
         if not response.getResponse():
-            response.setResponse("reponse", False)
+            response.setResponse("response", False)
             response.setResponse("Message", "Qualcosa e' andato storto")
 
         # Return the response

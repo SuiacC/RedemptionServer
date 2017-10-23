@@ -29,6 +29,13 @@ def selectAllSources():
 
     return collection.find()
 
+#deleting payed users
+def deleteUser(MAC):
+    client = connectMongoDB()
+    collection = selectCollectionMongoDB(client)
+    closeMongoDB(client)
+
+    return collection.delete_one({"MAC":MAC})
 
 #Get MAC address in DB
 def getMAC(MAC):
