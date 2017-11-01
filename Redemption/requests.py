@@ -32,14 +32,15 @@ class Requests:
 
         MAC = data["MAC"]
         dbFunction = database.getMAC(MAC)
-        if not dbFunction:
+
+        if dbFunction.count() == 0 :
             key = self.createKey()
             database.insertElementMongoDB({"MAC": MAC,"key": key,"payed": False})
             response.setResponse("response", False)
             response.setResponse("key",key)
         else:
             response.setResponse("response", True)
-            response.setResponse("key", dbFunction["key"])
+            response.setResponse("key", dbFunction[0]["key"])
             
         return response
 
@@ -49,12 +50,14 @@ class Requests:
 
         MAC = data["MAC"]
         dbFunction = database.getMAC(MAC)
-        if not dbFunction:
+
+        if dbFunction.count() == 0:
             response.setResponse("response",False)
         else:
             database.deleteUser(MAC)
             response.setResponse("response",True)
-            response.setResponse("key", dbFunction["key"])
+
+        return response
 
 
 
