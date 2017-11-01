@@ -41,11 +41,12 @@ class Requests:
         else:
             response.setResponse("response", True)
             response.setResponse("key", dbFunction[0]["key"])
+            response.setResponse("payed", dbFunction[0]["payed"])
             
         return response
 
     def deleteUser(self,data):
-
+        # Initialize response
         response = responses.Responses()
 
         MAC = data["MAC"]
@@ -59,6 +60,18 @@ class Requests:
 
         return response
 
+    def  pay(self, data):
+        # Initialize response
+        response = responses.Responses()
+
+        MAC = data["MAC"]
+        dbFunction = database.getMAC(MAC)
+
+        if dbFunction.count() == 0 :
+            response.setResponse("response", False)
+        else :
+            database.payedUser(MAC)
+            response.setResponse("response", True)
 
 
     def postRequest(self):
@@ -77,7 +90,10 @@ class Requests:
         if r == "CheckMAC":
             response = self.checkMAC(data)
         elif r == "IfUserPayed":
+            response = self.pay(data)
+        elif r == "DeleteMAC":
             response = self.deleteUser(data)
+
 
         print "response: "
         print response.getResponse()

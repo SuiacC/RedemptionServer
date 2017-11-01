@@ -52,3 +52,19 @@ def insertElementMongoDB(data):
     closeMongoDB(client)
 
     return collection.insert_one(data)
+
+def payedUser(MAC):
+
+    client = connectMongoDB()
+    collection = selectCollectionMongoDB(client)
+    closeMongoDB(client)
+
+    result = collection.update_one(
+        {"MAC": MAC},
+        {
+            "$set": {
+                "payed": True
+            }
+        })
+
+    return result
